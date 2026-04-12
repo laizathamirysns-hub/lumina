@@ -10,44 +10,67 @@ import { MOODS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { supabase } from '@/lib/supabase';
 
 interface DiaryEntry {
   id: string;
-  date: string;
+  created_at: string;
   mood: string;
   text: string;
 }
 
-export default function Diary() {
+export default function Diary({ userId }: { userId: string }) {
   const [entries, setEntries] = useState<DiaryEntry[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [newText, setNewText] = useState('');
   const [selectedMood, setSelectedMood] = useState(MOODS[0].id);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const saved = localStorage.getItem('lumina_diary');
-    if (saved) setEntries(JSON.parse(saved));
-  }, []);
+    fetchEntries();
+  }, [userId]);
 
-  const saveEntry = () => {
-    if (!newText.trim()) return;
-    const entry: DiaryEntry = {
-      id: Date.now().toString(),
-      date: new Date().toISOString(),
-      mood: selectedMood,
-      text: newText
-    };
-    const updated = [entry, ...entries];
-    setEntries(updated);
-    localStorage.setItem('lumina_diary', JSON.stringify(updated));
-    setNewText('');
-    setIsAdding(false);
+  const fetchEntries = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('diary_entries')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+    
+    if (data) setEntries(data);
+    setLoading(false);
   };
 
-  const deleteEntry = (id: string) => {
-    const updated = entries.filter(e => e.id !== id);
-    setEntries(updated);
-    localStorage.setItem('lumina_diary', JSON.stringify(updated));
+  const saveEntry = async () => {
+    if (!newText.trim()) return;
+    
+    const { data, error } = await supabase
+      .from('diary_entries')
+      .insert({
+        user_id: userId,
+        mood: selectedMood,
+        text: newText
+      })
+      .select()
+      .single();
+
+    if (data) {
+      setEntries([data, ...entries]);
+      setNewText('');
+      setIsAdding(false);
+    }
+  };
+
+  const deleteEntry = async (id: string) => {
+    const { error } = await supabase
+      .from('diary_entries')
+      .delete()
+      .eq('id', id);
+
+    if (!error) {
+      setEntries(entries.filter(e => e.id !== id));
+    }
   };
 
   return (
@@ -138,7 +161,7 @@ export default function Diary() {
                               <p className="font-bold text-sm">{mood.label}</p>
                               <p className="text-[10px] text-muted-foreground uppercase flex items-center gap-1">
                                 <Calendar className="w-3 h-3" />
-                                {format(new Date(entry.date), "dd 'de' MMMM, HH:mm", { locale: ptBR })}
+                                {format(new Date(entry.created_at), "dd 'de' MMMM, HH:mm", { locale: ptBR })}
                               </p>
                             </div>
                           </div>

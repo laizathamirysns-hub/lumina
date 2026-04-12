@@ -1,25 +1,35 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'motion/react';
 import { User, Bell, Palette, Shield, LogOut, Heart, Star, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/lib/supabase';
+import { Session } from '@supabase/supabase-js';
 
 interface ProfileProps {
-  userName: string;
-  setUserName: (name: string) => void;
+  session: Session;
 }
 
-export default function Profile({ userName, setUserName }: ProfileProps) {
+export default function Profile({ session }: ProfileProps) {
   const [isEditing, setIsEditing] = useState(false);
-  const [tempName, setTempName] = useState(userName);
+  const user = session.user;
+  const [tempName, setTempName] = useState(user.user_metadata.full_name || '');
 
-  const handleSave = () => {
-    setUserName(tempName);
-    setIsEditing(false);
+  const handleSave = async () => {
+    const { error } = await supabase.auth.updateUser({
+      data: { full_name: tempName }
+    });
+    if (!error) setIsEditing(false);
   };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
+
+  const userName = user.user_metadata.full_name || user.email?.split('@')[0] || 'Usuária';
 
   return (
     <div className="p-6 pb-24 space-y-8 max-w-md mx-auto">
@@ -73,7 +83,11 @@ export default function Profile({ userName, setUserName }: ProfileProps) {
           </div>
         </section>
 
-        <Button variant="ghost" className="w-full text-destructive hover:text-destructive hover:bg-destructive/10 rounded-2xl h-14">
+        <Button 
+          variant="ghost" 
+          className="w-full text-destructive hover:text-destructive hover:bg-destructive/10 rounded-2xl h-14"
+          onClick={handleLogout}
+        >
           <LogOut className="mr-2 w-5 h-5" /> Sair da conta
         </Button>
       </div>
