@@ -45,8 +45,8 @@ export const BREATHING_TECHNIQUES = [
 ];
 
 export const SOUNDS = [
-  { id: 'rain', label: 'Chuva Suave', icon: 'CloudRain', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }, // Placeholder
-  { id: 'nature', label: 'Natureza', icon: 'Trees', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3' },
-  { id: 'waves', label: 'Ondas do Mar', icon: 'Waves', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3' },
-  { id: 'piano', label: 'Piano Relaxante', icon: 'Music', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3' }
+  { id: 'rain', label: 'Chuva Suave', icon: 'CloudRain', url: 'https://www.soundjay.com/nature/rain-01.mp3' },
+  { id: 'nature', label: 'Natureza', icon: 'Trees', url: 'https://www.soundjay.com/nature/forest-01.mp3' },
+  { id: 'waves', label: 'Ondas do Mar', icon: 'Waves', url: 'https://www.soundjay.com/nature/ocean-wave-1.mp3' },
+  { id: 'piano', label: 'Piano Relaxante', icon: 'Music', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3' }
 ];

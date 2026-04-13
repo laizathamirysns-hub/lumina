@@ -97,8 +97,15 @@ export default function Profile({ userName, setUserName }: ProfileProps) {
 }
 
 function MenuButton({ icon: Icon, label, subLabel, color }: { icon: any, label: string, subLabel?: string, color: string }) {
+  const handleClick = () => {
+    alert(`${label} estará disponível em breve! ✨`);
+  };
+
   return (
-    <button className="w-full flex items-center justify-between p-4 bg-white rounded-2xl border border-border hover:border-primary/30 transition-all group">
+    <button 
+      onClick={handleClick}
+      className="w-full flex items-center justify-between p-4 bg-white rounded-2xl border border-border hover:border-primary/30 transition-all group"
+    >
       <div className="flex items-center gap-4">
         <div className={cn("p-2.5 rounded-xl transition-transform group-hover:scale-110", color)}>
           <Icon className="w-5 h-5 text-foreground/60" />

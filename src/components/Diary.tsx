@@ -106,8 +106,17 @@ export default function Diary() {
             </div>
 
             <div className="flex gap-3">
-              <Button variant="outline" className="flex-1 rounded-xl" onClick={() => setIsAdding(false)}>Cancelar</Button>
-              <Button className="flex-1 rounded-xl" onClick={saveEntry}>Salvar</Button>
+              <Button variant="outline" className="flex-1 rounded-xl" onClick={() => {
+                setIsAdding(false);
+                setNewText('');
+              }}>Cancelar</Button>
+              <Button 
+                className="flex-1 rounded-xl" 
+                onClick={saveEntry}
+                disabled={!newText.trim()}
+              >
+                Salvar
+              </Button>
             </div>
           </motion.div>
         )}
