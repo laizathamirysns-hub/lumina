@@ -1,12 +1,11 @@
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Sparkles, Mail, Lock, User, Heart } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
 
 export default function Auth() {
   const [loading, setLoading] = useState(false);
