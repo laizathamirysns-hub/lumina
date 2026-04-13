@@ -63,48 +63,48 @@
 
 @layer base {
   :root {
-    --background: #FAF7F2; /* Soft Beige */
-    --foreground: #4A4A4A;
+    --background: #FFF9FB; /* Very light pink/white */
+    --foreground: #2D3436;
     --card: #FFFFFF;
-    --card-foreground: #4A4A4A;
+    --card-foreground: #2D3436;
     --popover: #FFFFFF;
-    --popover-foreground: #4A4A4A;
-    --primary: #D4B996; /* Muted Gold/Beige */
+    --popover-foreground: #2D3436;
+    --primary: #FF4D8D; /* Vibrant Rose Pink */
     --primary-foreground: #FFFFFF;
-    --secondary: #FDF2F2; /* Soft Rosé */
-    --secondary-foreground: #4A4A4A;
-    --muted: #F5F3FF; /* Soft Lilac */
-    --muted-foreground: #7C7C7C;
-    --accent: #FDF2F2;
-    --accent-foreground: #4A4A4A;
-    --destructive: #EF4444;
+    --secondary: #FFE4EC; /* Soft Vibrant Pink */
+    --secondary-foreground: #2D3436;
+    --muted: #F0E6FF; /* Vibrant Lavender */
+    --muted-foreground: #636E72;
+    --accent: #FF75A0; /* Bright Coral Pink */
+    --accent-foreground: #FFFFFF;
+    --destructive: #FF4757;
     --destructive-foreground: #F9FAFB;
-    --border: #E5E7EB;
-    --input: #E5E7EB;
-    --ring: #D4B996;
-    --radius: 1rem;
+    --border: #FFD1E1;
+    --input: #FFD1E1;
+    --ring: #FF4D8D;
+    --radius: 1.25rem;
   }
 
   .dark {
-    --background: #1A1A1A;
+    --background: #1A0B10;
     --foreground: #F9FAFB;
-    --card: #262626;
+    --card: #2D141C;
     --card-foreground: #F9FAFB;
-    --popover: #262626;
+    --popover: #2D141C;
     --popover-foreground: #F9FAFB;
-    --primary: #D4B996;
-    --primary-foreground: #1A1A1A;
-    --secondary: #374151;
+    --primary: #FF4D8D;
+    --primary-foreground: #FFFFFF;
+    --secondary: #4A1D2C;
     --secondary-foreground: #F9FAFB;
-    --muted: #374151;
-    --muted-foreground: #9CA3AF;
-    --accent: #374151;
-    --accent-foreground: #F9FAFB;
-    --destructive: #7F1D1D;
+    --muted: #3D1F3D;
+    --muted-foreground: #B2BEC3;
+    --accent: #FF75A0;
+    --accent-foreground: #FFFFFF;
+    --destructive: #FF4757;
     --destructive-foreground: #F9FAFB;
-    --border: #374151;
-    --input: #374151;
-    --ring: #D4B996;
+    --border: #4A1D2C;
+    --input: #4A1D2C;
+    --ring: #FF4D8D;
   }
 }
 
@@ -114,9 +114,10 @@
   }
   body {
     @apply bg-background text-foreground font-sans;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ff4d8d' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM6 30V20h10V10h10V0h10v10h10v10h10v10H50v10H40v10H30v10H20v-10H10V30H6zM16 20v10h10V20H16zm10 10v10h10V30H26zm10-10v10h10V20H36zm10 10v10h10V30H46z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-serif;
+    @apply font-serif text-primary;
   }
 }
 

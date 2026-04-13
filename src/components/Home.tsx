@@ -1,13 +1,12 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { CheckCircle2, Circle, Sun, Cloud, Moon, Sparkles } from 'lucide-react';
+import { CheckCircle2, Circle, Sun, Cloud, Moon, Sparkles, Flower2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { MOTIVATIONAL_PHRASES, SELF_CARE_TASKS } from '@/lib/constants';
-import { supabase } from '@/lib/supabase';
 
-export default function Home({ userName, userId }: { userName: string; userId: string }) {
+export default function Home({ userName }: { userName: string }) {
   const [timeOfDay, setTimeOfDay] = useState<'morning' | 'afternoon' | 'night'>('morning');
   const [phrase, setPhrase] = useState('');
   const [tasks, setTasks] = useState<Record<string, boolean>>({});
@@ -23,46 +22,22 @@ export default function Home({ userName, userId }: { userName: string; userId: s
     const phrases = MOTIVATIONAL_PHRASES[period];
     setPhrase(phrases[Math.floor(Math.random() * phrases.length)]);
 
-    // Fetch daily tasks from Supabase
-    const fetchTasks = async () => {
-      const today = new Date().toISOString().split('T')[0];
-      const { data, error } = await supabase
-        .from('checklists')
-        .select('task_id, completed')
-        .eq('user_id', userId)
-        .eq('date', today);
-      
-      if (data) {
-        const taskMap: Record<string, boolean> = {};
-        data.forEach(t => taskMap[t.task_id] = t.completed);
-        setTasks(taskMap);
+    const savedTasks = localStorage.getItem('lumina_tasks');
+    if (savedTasks) {
+      const { date, data } = JSON.parse(savedTasks);
+      if (date === new Date().toISOString().split('T')[0]) {
+        setTasks(data);
       }
-    };
-
-    fetchTasks();
-  }, [userId]);
-
-  const toggleTask = async (taskId: string) => {
-    const isCompleted = !tasks[taskId];
-    const today = new Date().toISOString().split('T')[0];
-
-    setTasks(prev => ({ ...prev, [taskId]: isCompleted }));
-
-    // Upsert to Supabase
-    const { error } = await supabase
-      .from('checklists')
-      .upsert({ 
-        user_id: userId, 
-        task_id: taskId, 
-        completed: isCompleted, 
-        date: today 
-      }, { onConflict: 'user_id, task_id, date' });
-
-    if (error) {
-      console.error('Error updating task:', error);
-      // Revert state on error
-      setTasks(prev => ({ ...prev, [taskId]: !isCompleted }));
     }
+  }, []);
+
+  const toggleTask = (taskId: string) => {
+    const newTasks = { ...tasks, [taskId]: !tasks[taskId] };
+    setTasks(newTasks);
+    localStorage.setItem('lumina_tasks', JSON.stringify({
+      date: new Date().toISOString().split('T')[0],
+      data: newTasks
+    }));
   };
 
   const completedCount = Object.values(tasks).filter(Boolean).length;

@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plus, Trash2, Calendar, Smile, Heart, MessageSquare, BookHeart } from 'lucide-react';
+import { Plus, Trash2, Calendar, Smile, Heart, MessageSquare, BookHeart, Flower2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,7 +10,6 @@ import { MOODS } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { supabase } from '@/lib/supabase';
 
 interface DiaryEntry {
   id: string;
@@ -19,7 +18,7 @@ interface DiaryEntry {
   text: string;
 }
 
-export default function Diary({ userId }: { userId: string }) {
+export default function Diary() {
   const [entries, setEntries] = useState<DiaryEntry[]>([]);
   const [isAdding, setIsAdding] = useState(false);
   const [newText, setNewText] = useState('');
@@ -27,50 +26,30 @@ export default function Diary({ userId }: { userId: string }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchEntries();
-  }, [userId]);
-
-  const fetchEntries = async () => {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('diary_entries')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false });
-    
-    if (data) setEntries(data);
+    const saved = localStorage.getItem('lumina_diary');
+    if (saved) setEntries(JSON.parse(saved));
     setLoading(false);
-  };
+  }, []);
 
-  const saveEntry = async () => {
+  const saveEntry = () => {
     if (!newText.trim()) return;
-    
-    const { data, error } = await supabase
-      .from('diary_entries')
-      .insert({
-        user_id: userId,
-        mood: selectedMood,
-        text: newText
-      })
-      .select()
-      .single();
-
-    if (data) {
-      setEntries([data, ...entries]);
-      setNewText('');
-      setIsAdding(false);
-    }
+    const entry: DiaryEntry = {
+      id: Date.now().toString(),
+      created_at: new Date().toISOString(),
+      mood: selectedMood,
+      text: newText
+    };
+    const updated = [entry, ...entries];
+    setEntries(updated);
+    localStorage.setItem('lumina_diary', JSON.stringify(updated));
+    setNewText('');
+    setIsAdding(false);
   };
 
-  const deleteEntry = async (id: string) => {
-    const { error } = await supabase
-      .from('diary_entries')
-      .delete()
-      .eq('id', id);
-
-    if (!error) {
-      setEntries(entries.filter(e => e.id !== id));
-    }
+  const deleteEntry = (id: string) => {
+    const updated = entries.filter(e => e.id !== id);
+    setEntries(updated);
+    localStorage.setItem('lumina_diary', JSON.stringify(updated));
   };
 
   return (
